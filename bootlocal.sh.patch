@@ -1,0 +1,9 @@
+--- /opt/bootlocal.sh.orig
++++ /opt/bootlocal.sh
+@@ -1,2 +1,6 @@
+ #!/bin/sh
++#GvI added
++# Start AMP Power
++mnt/mmcblk0p2/tce/amp_power/amp_power_initd start
++#GVI End 
+ # put other system startup commands here

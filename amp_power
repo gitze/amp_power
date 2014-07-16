@@ -1,0 +1,50 @@
+#! /bin/sh
+
+/usr/local/bin/gpio -g write 4 1
+/usr/local/bin/gpio -g mode 4 out
+#/usr/local/bin/gpio -g write 4 1 
+
+NextAction="AUS"
+Action="AUS"
+WaitTillExec=0
+LastStatus=0
+Status=-1
+while [ 1 -eq 1 ]
+do
+	Status=`cat /proc/asound/card*/pcm*/sub*/status | grep -c RUNNING`
+#
+	# Cleanup Status Value to (0/1)
+	if [ $Status -ne 0 ] 
+	then
+		Status=1
+	fi
+
+	if [ "$Status" != "$LastStatus" ]
+	then
+		if [ $Status -eq 0 ]
+		then
+			echo "auf AUS gedrückt"
+			WaitTillExec=10
+			NextAction="AUS"
+		else
+			echo "auf AN  gedrückt"
+        		WaitTillExec=1
+			NextAction="AN"
+		fi
+	fi
+	echo "Aktion: $NextAction, warte $WaitTillExec Runden"
+	LastStatus=$Status
+
+	if [ $WaitTillExec -ne 0 ] 
+	then
+		echo "Running Countdown ..."
+		WaitTillExec=$((WaitTillExec-1))
+		Action=$NextAction
+	fi
+
+	case "$Action$WaitTillExec" in 
+	"AUS0")	/usr/local/bin/gpio -g write 4 1 ;echo "Power Off";Action="";;	
+	"AN0")	/usr/local/bin/gpio -g write 4 0 ;echo "Power On";Action="";;
+	esac
+	sleep 0.5
+done

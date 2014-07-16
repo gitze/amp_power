@@ -1,0 +1,27 @@
+#!/bin/sh
+
+case "$1" in
+start)
+echo "Starting amp_power"
+start-stop-daemon --start --quiet -b -m -p/var/run/amp_power.pid --exec /mnt/mmcblk0p2/tce/amp_power/amp_power --  
+;;
+stop)
+echo "Stopping amp_power"
+start-stop-daemon --stop --quiet --pidfile /var/run/amp_power.pid
+sudo rm -f /var/run/amp_power.pid
+;;
+#  restart)
+#    echo "Stopping amp_power"
+#    start-stop-daemon --stop --quiet --pidfile /var/run/amp_power.pid
+#    sudo rm -f /var/run/amp_power.pid
+#	 echo "Starting amp_power"
+#	 start-stop-daemon --start --quiet -b -m -p/var/run/amp_power.pid --exec /mnt/mmcblk0p2/tce/amp_power/amp_power --  
+	
+*)
+#echo "Usage: /usr/local/etc/init.d/amp_power_initd {start|stop}"
+echo "Usage: /mnt/mmcblk0p2/tce/amp_power/amp_power_initd start  {start|stop}"
+exit 1
+;;
+esac
+exit 0
+
